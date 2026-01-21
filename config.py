@@ -9,6 +9,7 @@ load_dotenv()
 BOT_TOKEN = os.getenv("BOT_TOKEN", "YOUR_BOT_TOKEN_HERE")
 CHANNEL_USERNAME = os.getenv("CHANNEL_USERNAME", "pk_oa")
 CHANNEL_URL = os.getenv("CHANNEL_URL", "https://t.me/pk_oa")
+APP_BASE_URL = os.getenv("APP_BASE_URL", "https://your-app.vercel.app")
 
 # 管理员配置
 ADMIN_USER_ID = int(os.getenv("ADMIN_USER_ID", "123456789"))
