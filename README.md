@@ -1,11 +1,11 @@
-# SheerID 自动认证 Telegram 机器人
+# SheerID 自动认证 Web 应用
 
 ![Stars](https://img.shields.io/github/stars/PastKing/tgbot-verify?style=social)
 ![Forks](https://img.shields.io/github/forks/PastKing/tgbot-verify?style=social)
 ![Issues](https://img.shields.io/github/issues/PastKing/tgbot-verify)
 ![License](https://img.shields.io/github/license/PastKing/tgbot-verify)
 
-> 🤖 自动完成 SheerID 学生/教师认证的 Telegram 机器人
+> 🤖 自动完成 SheerID 学生/教师认证的 Web 应用
 > 
 > 基于 [@auto_sheerid_bot](https://t.me/auto_sheerid_bot) GGBond 的旧版代码改进
 
@@ -13,7 +13,7 @@
 
 ## 📋 项目简介
 
-这是一个基于 Python 的 Telegram 机器人，可以自动完成多个平台的 SheerID 学生/教师身份认证。机器人自动生成身份信息、创建认证文档并提交到 SheerID 平台，大大简化了认证流程。
+这是一个基于 Python 的 Web 应用，可以自动完成多个平台的 SheerID 学生/教师身份认证。应用自动生成身份信息、创建认证文档并提交到 SheerID 平台，大大简化了认证流程。
 
 > **⚠️ 重要提示**：
 > 
@@ -22,13 +22,13 @@
 
 ### 🎯 支持的认证服务
 
-| 命令 | 服务 | 类型 | 状态 | 说明 |
+| 功能 | 服务 | 类型 | 状态 | 说明 |
 |------|------|------|------|------|
-| `/verify` | Gemini One Pro | 教师认证 | ✅ 完整 | Google AI Studio 教育优惠 |
-| `/verify2` | ChatGPT Teacher K12 | 教师认证 | ✅ 完整 | OpenAI ChatGPT 教育优惠 |
-| `/verify3` | Spotify Student | 学生认证 | ✅ 完整 | Spotify 学生订阅优惠 |
-| `/verify4` | Bolt.new Teacher | 教师认证 | ✅ 完整 | Bolt.new 教育优惠（自动获取 code）|
-| `/verify5` | YouTube Premium Student | 学生认证 | ⚠️ 半成品 | YouTube Premium 学生优惠（见下方说明）|
+| `verify` | Gemini One Pro | 教师认证 | ✅ 完整 | Google AI Studio 教育优惠 |
+| `verify2` | ChatGPT Teacher K12 | 教师认证 | ✅ 完整 | OpenAI ChatGPT 教育优惠 |
+| `verify3` | Spotify Student | 学生认证 | ✅ 完整 | Spotify 学生订阅优惠 |
+| `verify4` | Bolt.new Teacher | 教师认证 | ✅ 完整 | Bolt.new 教育优惠（自动获取 code）|
+| `verify5` | YouTube Premium Student | 学生认证 | ⚠️ 半成品 | YouTube Premium 学生优惠（见下方说明）|
 
 > **⚠️ YouTube 认证特别说明**：
 > 
@@ -45,11 +45,11 @@
 > 3. 开始认证流程，搜索 `https://services.sheerid.com/rest/v2/verification/`
 > 4. 从请求载荷中获取 `programId`，从响应中获取 `verificationId`
 > 5. 手动组成链接：`https://services.sheerid.com/verify/{programId}/?verificationId={verificationId}`
-> 6. 使用 `/verify5` 命令提交该链接
+> 6. 使用验证功能提交该链接
 
 > **💡 ChatGPT 军人认证思路**：
 > 
-> 本项目提供了 ChatGPT 军人 SheerID 认证的实现思路和接口文档。军人认证流程与普通学生/教师认证不同，需要先执行 `collectMilitaryStatus` 接口设置军人状态，然后再提交个人信息表单。详细实现思路和接口说明请查看 [`military/README.md`](military/README.md) 文档。用户可根据该文档自行集成到机器人中。
+> 本项目提供了 ChatGPT 军人 SheerID 认证的实现思路和接口文档。军人认证流程与普通学生/教师认证不同，需要先执行 `collectMilitaryStatus` 接口设置军人状态，然后再提交个人信息表单。详细实现思路和接口说明请查看 [`military/README.md`](military/README.md) 文档。用户可根据该文档自行集成到应用中。
 
 ### ✨ 核心功能
 
@@ -65,7 +65,7 @@
 ## 🛠️ 技术栈
 
 - **语言**：Python 3.11+
-- **Bot框架**：python-telegram-bot 20.0+
+- **Web 框架**：FastAPI
 - **数据库**：MySQL 5.7+
 - **浏览器自动化**：Playwright
 - **HTTP客户端**：httpx
@@ -95,9 +95,8 @@ playwright install chromium
 复制 `env.example` 为 `.env` 并填写配置：
 
 ```env
-# Telegram Bot 配置
-BOT_TOKEN=your_bot_token_here
-CHANNEL_USERNAME=your_channel
+# Web 配置
+APP_BASE_URL=https://your-app.vercel.app
 CHANNEL_URL=https://t.me/your_channel
 ADMIN_USER_ID=your_admin_id
 
@@ -109,10 +108,10 @@ MYSQL_PASSWORD=your_password
 MYSQL_DATABASE=tgbot_verify
 ```
 
-### 4. 启动机器人
+### 4. 启动 Web 应用
 
 ```bash
-python bot.py
+python -m uvicorn api.index:app --host 0.0.0.0 --port 8000
 ```
 
 ---
@@ -151,35 +150,11 @@ docker run -d \
 
 ## 📖 使用说明
 
-### 用户命令
+### Web 操作
 
-```bash
-/start              # 开始使用（注册）
-/about              # 了解机器人功能
-/balance            # 查看积分余额
-/qd                 # 每日签到（+1积分）
-/invite             # 生成邀请链接（+2积分/人）
-/use <卡密>         # 使用卡密兑换积分
-/verify <链接>      # Gemini One Pro 认证
-/verify2 <链接>     # ChatGPT Teacher K12 认证
-/verify3 <链接>     # Spotify Student 认证
-/verify4 <链接>     # Bolt.new Teacher 认证
-/verify5 <链接>     # YouTube Premium Student 认证
-/getV4Code <id>     # 获取 Bolt.new 认证码
-/help               # 查看帮助信息
-```
-
-### 管理员命令
-
-```bash
-/addbalance <用户ID> <积分>     # 增加用户积分
-/block <用户ID>                 # 拉黑用户
-/white <用户ID>                 # 取消拉黑
-/blacklist                      # 查看黑名单
-/genkey <卡密> <积分> [次数] [天数]  # 生成卡密
-/listkeys                       # 查看卡密列表
-/broadcast <文本>               # 群发通知
-```
+- 在 Web 控制台中完成注册、查看余额、签到、邀请等功能。
+- 在认证区域选择目标服务并提交 SheerID 链接。
+- 管理员可在 Web 控制台中执行积分、黑名单、卡密等管理操作。
 
 ### 使用流程
 
@@ -189,12 +164,10 @@ docker run -d \
    - 复制浏览器地址栏中的完整 URL（包含 `verificationId`）
 
 2. **提交认证请求**
-   ```
-   /verify3 https://services.sheerid.com/verify/xxx/?verificationId=yyy
-   ```
+   - 将链接粘贴到 Web 控制台并选择对应服务。
 
 3. **等待处理**
-   - 机器人自动生成身份信息
+   - 应用自动生成身份信息
    - 创建学生证/教师证图片
    - 提交到 SheerID 平台
 
@@ -208,7 +181,7 @@ docker run -d \
 
 ```
 tgbot-verify/
-├── bot.py                  # 机器人主程序
+├── api/                    # FastAPI Web 应用
 ├── config.py               # 全局配置
 ├── database_mysql.py       # MySQL 数据库管理
 ├── .env                    # 环境变量配置（需自行创建）
@@ -216,10 +189,6 @@ tgbot-verify/
 ├── requirements.txt        # Python 依赖
 ├── Dockerfile              # Docker 镜像构建
 ├── docker-compose.yml      # Docker Compose 配置
-├── handlers/               # 命令处理器
-│   ├── user_commands.py    # 用户命令
-│   ├── admin_commands.py   # 管理员命令
-│   └── verify_commands.py  # 认证命令
 ├── one/                    # Gemini One Pro 认证模块
 ├── k12/                    # ChatGPT K12 认证模块
 ├── spotify/                # Spotify Student 认证模块
@@ -228,8 +197,7 @@ tgbot-verify/
 ├── military/               # ChatGPT 军人认证思路文档
 └── utils/                  # 工具函数
     ├── messages.py         # 消息模板
-    ├── concurrency.py      # 并发控制
-    └── checks.py           # 权限检查
+    └── concurrency.py      # 并发控制
 ```
 
 ---
@@ -240,10 +208,9 @@ tgbot-verify/
 
 | 变量名 | 必填 | 说明 | 默认值 |
 |--------|------|------|--------|
-| `BOT_TOKEN` | ✅ | Telegram Bot Token | - |
-| `CHANNEL_USERNAME` | ❌ | 频道用户名 | pk_oa |
+| `APP_BASE_URL` | ✅ | Web 应用基础地址 | https://your-app.vercel.app |
 | `CHANNEL_URL` | ❌ | 频道链接 | https://t.me/pk_oa |
-| `ADMIN_USER_ID` | ✅ | 管理员 Telegram ID | - |
+| `ADMIN_USER_ID` | ✅ | 管理员 ID | - |
 | `MYSQL_HOST` | ✅ | MySQL 主机地址 | localhost |
 | `MYSQL_PORT` | ❌ | MySQL 端口 | 3306 |
 | `MYSQL_USER` | ✅ | MySQL 用户名 | - |
@@ -267,7 +234,7 @@ REGISTER_REWARD = 1    # 注册奖励积分
 
 ### 🔴 使用前必读
 
-**在使用机器人之前，请务必检查并更新各模块的验证配置！**
+**在使用应用之前，请务必检查并更新各模块的验证配置！**
 
 由于 SheerID 平台的 `programId` 可能会定期更新，以下服务在使用前**必须**更新配置文件中的验证资料：
 
@@ -293,7 +260,7 @@ REGISTER_REWARD = 1    # 注册奖励积分
 
 - 📺 **Telegram 频道**：https://t.me/pk_oa
 - 🐛 **问题反馈**：[GitHub Issues](https://github.com/PastKing/tgbot-verify/issues)
-- 📖 **部署文档**：[DEPLOY.md](DEPLOY.md)
+- 📖 **部署文档**：即将更新
 
 ---
 

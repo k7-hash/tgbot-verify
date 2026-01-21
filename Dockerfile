@@ -54,9 +54,8 @@ ENV PYTHONUNBUFFERED=1
 # MySQL配置（通过 docker-compose.yml 或命令行传入）
 # 不在这里硬编码，使用环境变量
 
-# 健康检查（检查机器人进程）
-HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD pgrep -f "python.*bot.py" || exit 1
+# 暴露端口
+EXPOSE 8000
 
-# 启动机器人
-CMD ["python", "-u", "bot.py"]
+# 启动 Web 应用
+CMD ["python", "-m", "uvicorn", "api.index:app", "--host", "0.0.0.0", "--port", "8000"]

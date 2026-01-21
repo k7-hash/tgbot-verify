@@ -18,7 +18,6 @@ from utils.messages import (
     get_about_message,
     get_help_message,
     get_insufficient_balance_message,
-    get_verify_usage_message,
     get_welcome_message,
 )
 from youtube.sheerid_verifier import SheerIDVerifier as YouTubeVerifier

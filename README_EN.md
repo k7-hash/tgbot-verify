@@ -1,11 +1,11 @@
-# SheerID Auto-Verification Telegram Bot
+# SheerID Auto-Verification Web App
 
 ![Stars](https://img.shields.io/github/stars/PastKing/tgbot-verify?style=social)
 ![Forks](https://img.shields.io/github/forks/PastKing/tgbot-verify?style=social)
 ![Issues](https://img.shields.io/github/issues/PastKing/tgbot-verify)
 ![License](https://img.shields.io/github/license/PastKing/tgbot-verify)
 
-> 🤖 Automated SheerID Student/Teacher Verification Telegram Bot
+> 🤖 Automated SheerID Student/Teacher Verification Web App
 > 
 > Based on [@auto_sheerid_bot](https://t.me/auto_sheerid_bot) GGBond's legacy code with improvements
 
@@ -15,7 +15,7 @@
 
 ## 📋 Overview
 
-A Python-based Telegram bot that automates SheerID student/teacher identity verification for multiple platforms. The bot automatically generates identity information, creates verification documents, and submits them to the SheerID platform, significantly simplifying the verification process.
+A Python-based web app that automates SheerID student/teacher identity verification for multiple platforms. The app automatically generates identity information, creates verification documents, and submits them to the SheerID platform, significantly simplifying the verification process.
 
 > **⚠️ Important Notice**:
 > 
@@ -24,13 +24,13 @@ A Python-based Telegram bot that automates SheerID student/teacher identity veri
 
 ### 🎯 Supported Services
 
-| Command | Service | Type | Status | Description |
+| Function | Service | Type | Status | Description |
 |---------|---------|------|--------|-------------|
-| `/verify` | Gemini One Pro | Teacher | ✅ Complete | Google AI Studio Education Discount |
-| `/verify2` | ChatGPT Teacher K12 | Teacher | ✅ Complete | OpenAI ChatGPT Education Discount |
-| `/verify3` | Spotify Student | Student | ✅ Complete | Spotify Student Subscription Discount |
-| `/verify4` | Bolt.new Teacher | Teacher | ✅ Complete | Bolt.new Education Discount (Auto code retrieval) |
-| `/verify5` | YouTube Premium Student | Student | ⚠️ Beta | YouTube Premium Student Discount (See notes below) |
+| `verify` | Gemini One Pro | Teacher | ✅ Complete | Google AI Studio Education Discount |
+| `verify2` | ChatGPT Teacher K12 | Teacher | ✅ Complete | OpenAI ChatGPT Education Discount |
+| `verify3` | Spotify Student | Student | ✅ Complete | Spotify Student Subscription Discount |
+| `verify4` | Bolt.new Teacher | Teacher | ✅ Complete | Bolt.new Education Discount (Auto code retrieval) |
+| `verify5` | YouTube Premium Student | Student | ⚠️ Beta | YouTube Premium Student Discount (See notes below) |
 
 > **⚠️ YouTube Verification Special Notes**:
 > 
@@ -47,11 +47,11 @@ A Python-based Telegram bot that automates SheerID student/teacher identity veri
 > 3. Start verification process, search for `https://services.sheerid.com/rest/v2/verification/`
 > 4. Extract `programId` from request payload and `verificationId` from response
 > 5. Manually construct link: `https://services.sheerid.com/verify/{programId}/?verificationId={verificationId}`
-> 6. Submit the link using `/verify5` command
+> 6. Submit the link using the verification flow
 
 > **💡 ChatGPT Military Verification Approach**:
 > 
-> This project provides implementation approach and API documentation for ChatGPT Military SheerID verification. The military verification process differs from regular student/teacher verification, requiring an initial `collectMilitaryStatus` API call to set military status before submitting personal information. For detailed implementation approach and API documentation, please refer to [`military/README.md`](military/README.md). Users can integrate this into the bot based on the documentation.
+> This project provides implementation approach and API documentation for ChatGPT Military SheerID verification. The military verification process differs from regular student/teacher verification, requiring an initial `collectMilitaryStatus` API call to set military status before submitting personal information. For detailed implementation approach and API documentation, please refer to [`military/README.md`](military/README.md). Users can integrate this into the app based on the documentation.
 
 ### ✨ Key Features
 
@@ -67,7 +67,7 @@ A Python-based Telegram bot that automates SheerID student/teacher identity veri
 ## 🛠️ Tech Stack
 
 - **Language**: Python 3.11+
-- **Bot Framework**: python-telegram-bot 20.0+
+- **Web Framework**: FastAPI
 - **Database**: MySQL 5.7+
 - **Browser Automation**: Playwright
 - **HTTP Client**: httpx
@@ -97,9 +97,8 @@ playwright install chromium
 Copy `env.example` to `.env` and fill in the configuration:
 
 ```env
-# Telegram Bot Configuration
-BOT_TOKEN=your_bot_token_here
-CHANNEL_USERNAME=your_channel
+# Web App Configuration
+APP_BASE_URL=https://your-app.vercel.app
 CHANNEL_URL=https://t.me/your_channel
 ADMIN_USER_ID=your_admin_id
 
@@ -111,10 +110,10 @@ MYSQL_PASSWORD=your_password
 MYSQL_DATABASE=tgbot_verify
 ```
 
-### 4. Start Bot
+### 4. Start Web App
 
 ```bash
-python bot.py
+python -m uvicorn api.index:app --host 0.0.0.0 --port 8000
 ```
 
 ---
@@ -153,35 +152,11 @@ docker run -d \
 
 ## 📖 Usage
 
-### User Commands
+### Web UI Actions
 
-```bash
-/start              # Start using (register)
-/about              # Learn about bot features
-/balance            # Check points balance
-/qd                 # Daily check-in (+1 point)
-/invite             # Generate invitation link (+2 points per person)
-/use <code>         # Redeem points with code
-/verify <link>      # Gemini One Pro verification
-/verify2 <link>     # ChatGPT Teacher K12 verification
-/verify3 <link>     # Spotify Student verification
-/verify4 <link>     # Bolt.new Teacher verification
-/verify5 <link>     # YouTube Premium Student verification
-/getV4Code <id>     # Get Bolt.new verification code
-/help               # View help information
-```
-
-### Admin Commands
-
-```bash
-/addbalance <user_id> <points>           # Add user points
-/block <user_id>                         # Block user
-/white <user_id>                         # Unblock user
-/blacklist                               # View blacklist
-/genkey <code> <points> [times] [days]   # Generate redemption code
-/listkeys                                # View redemption code list
-/broadcast <text>                        # Broadcast notification
-```
+- Register, check balance, daily check-in, and invite link generation are available in the web console.
+- Verification flows are available by selecting the target service and submitting the SheerID link.
+- Admin actions (add balance, block/unblock, key management) are available to admin users in the web UI.
 
 ### Verification Process
 
@@ -191,12 +166,10 @@ docker run -d \
    - Copy the full URL from browser address bar (including `verificationId`)
 
 2. **Submit Verification Request**
-   ```
-   /verify3 https://services.sheerid.com/verify/xxx/?verificationId=yyy
-   ```
+   - Paste the link into the web console and select the matching verification service.
 
 3. **Wait for Processing**
-   - Bot automatically generates identity information
+   - The app automatically generates identity information
    - Creates student/teacher ID image
    - Submits to SheerID platform
 
@@ -210,7 +183,7 @@ docker run -d \
 
 ```
 tgbot-verify/
-├── bot.py                  # Main bot program
+├── api/                    # FastAPI web app
 ├── config.py               # Global configuration
 ├── database_mysql.py       # MySQL database management
 ├── .env                    # Environment variables (create yourself)
@@ -218,10 +191,6 @@ tgbot-verify/
 ├── requirements.txt        # Python dependencies
 ├── Dockerfile              # Docker image build
 ├── docker-compose.yml      # Docker Compose configuration
-├── handlers/               # Command handlers
-│   ├── user_commands.py    # User commands
-│   ├── admin_commands.py   # Admin commands
-│   └── verify_commands.py  # Verification commands
 ├── one/                    # Gemini One Pro verification module
 ├── k12/                    # ChatGPT K12 verification module
 ├── spotify/                # Spotify Student verification module
@@ -230,8 +199,7 @@ tgbot-verify/
 ├── military/               # ChatGPT Military verification approach documentation
 └── utils/                  # Utility functions
     ├── messages.py         # Message templates
-    ├── concurrency.py      # Concurrency control
-    └── checks.py           # Permission checks
+    └── concurrency.py      # Concurrency control
 ```
 
 ---
@@ -242,10 +210,9 @@ tgbot-verify/
 
 | Variable | Required | Description | Default |
 |----------|----------|-------------|---------|
-| `BOT_TOKEN` | ✅ | Telegram Bot Token | - |
-| `CHANNEL_USERNAME` | ❌ | Channel username | pk_oa |
+| `APP_BASE_URL` | ✅ | Web app base URL | https://your-app.vercel.app |
 | `CHANNEL_URL` | ❌ | Channel link | https://t.me/pk_oa |
-| `ADMIN_USER_ID` | ✅ | Admin Telegram ID | - |
+| `ADMIN_USER_ID` | ✅ | Admin ID | - |
 | `MYSQL_HOST` | ✅ | MySQL host address | localhost |
 | `MYSQL_PORT` | ❌ | MySQL port | 3306 |
 | `MYSQL_USER` | ✅ | MySQL username | - |
@@ -269,7 +236,7 @@ REGISTER_REWARD = 1    # Registration reward points
 
 ### 🔴 Must Read Before Use
 
-**Before using the bot, please check and update verification configurations in each module!**
+**Before using the app, please check and update verification configurations in each module!**
 
 Since SheerID platform's `programId` may be updated periodically, the following services **must** update verification data in their configuration files before use:
 
@@ -295,7 +262,7 @@ Since SheerID platform's `programId` may be updated periodically, the following 
 
 - 📺 **Telegram Channel**: https://t.me/pk_oa
 - 🐛 **Issue Tracking**: [GitHub Issues](https://github.com/PastKing/tgbot-verify/issues)
-- 📖 **Deployment Guide**: [DEPLOY.md](DEPLOY.md)
+- 📖 **Deployment Guide**: coming soon
 
 ---
 
